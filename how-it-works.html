@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How It Works - UtilityComplaint</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .hiw-wrapper { max-width: 860px; margin: 0 auto; padding: 52px 28px 60px; }
+    .hiw-header { text-align: center; margin-bottom: 52px; }
+    .hiw-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; }
+    .hiw-header p { color: var(--text-medium); font-size: 1rem; max-width: 520px; margin: 0 auto; line-height: 1.7; }
+    .step {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+    .step.reverse { grid-template-columns: auto 1fr; }
+    .step.reverse .step-card { order: 2; }
+    .step.reverse .step-icon-box { order: 1; }
+    .step-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+    }
+    .step-number {
+      width: 32px; height: 32px;
+      background: var(--primary-dark);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .step-card h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; }
+    .step-card p { color: var(--text-medium); line-height: 1.7; margin-bottom: 14px; font-size: 0.93rem; }
+    .step-card ul { list-style: none; }
+    .step-card ul li { font-size: 0.9rem; color: var(--text-medium); padding: 3px 0; display: flex; align-items: center; gap: 8px; }
+    .step-card ul li::before { content: '✅'; font-size: 0.85rem; }
+    .step-icon-box {
+      width: 110px; height: 110px;
+      background: #fce8f0;
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+    @media (max-width: 640px) {
+      .step, .step.reverse { grid-template-columns: 1fr; }
+      .step.reverse .step-card, .step.reverse .step-icon-box { order: unset; }
+      .step-icon-box { width: 70px; height: 70px; font-size: 2rem; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-icon">!</span>UtilityComplaint</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="how-it-works.html" class="active">How It Works</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="track.html">Track Complaint</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-theme" id="themeToggle"></button>
+    <a href="login.html" class="btn-login">Login</a>
+    <a href="signup.html" class="btn-signup">Sign Up</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-content">
+<div class="hiw-wrapper">
+  <div class="hiw-header">
+    <h1>How It Works</h1>
+    <p>Our streamlined process makes it easy to report, track, and resolve utility complaints. Follow these simple steps to get your issue resolved quickly.</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h2>Register Your Complaint</h2>
+      <p>Fill out a simple online form with details about your utility issue. Include your location, complaint type, and description.</p>
+      <ul>
+        <li>Choose the utility service type</li>
+        <li>Provide your contact information</li>
+        <li>Describe the issue in detail</li>
+        <li>Upload photos if needed</li>
+        <li>Submit your complaint</li>
+      </ul>
+    </div>
+    <div class="step-icon-box">📄</div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step reverse">
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h2>Complaint Verification</h2>
+      <p>Our system automatically verifies your complaint and assigns it to the relevant department.</p>
+      <ul>
+        <li>Automatic location verification</li>
+        <li>Department assignment</li>
+        <li>Priority level assessment</li>
+        <li>Acknowledgment receipt sent</li>
+        <li>Unique tracking ID generated</li>
+      </ul>
+    </div>
+    <div class="step-icon-box">✅</div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h2>Issue Resolution</h2>
+      <p>The assigned department works on resolving your complaint. You receive real-time updates throughout the process.</p>
+      <ul>
+        <li>Field team dispatched</li>
+        <li>Regular status updates sent</li>
+        <li>Progress tracked in dashboard</li>
+        <li>Estimated resolution time shared</li>
+        <li>Work order managed</li>
+      </ul>
+    </div>
+    <div class="step-icon-box">🔧</div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step reverse">
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <h2>Feedback & Closure</h2>
+      <p>Once resolved, you receive a notification and can provide feedback on the resolution quality.</p>
+      <ul>
+        <li>Resolution notification sent</li>
+        <li>Satisfaction survey</li>
+        <li>Rate the service</li>
+        <li>Complaint archived</li>
+        <li>Follow-up support available</li>
+      </ul>
+    </div>
+    <div class="step-icon-box">⭐</div>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><h4>UtilityComplaint</h4><p style="font-size:0.85rem;color:#c8b0e0;line-height:1.6">Report and track utility issues efficiently.</p></div>
+    <div><h4>Quick Links</h4><a href="index.html">Home</a><a href="dashboard.html">Dashboard</a><a href="map.html">Map</a><a href="track.html">Track</a></div>
+    <div><h4>Services</h4><a href="#">Electricity</a><a href="#">Water Supply</a><a href="#">Roads</a><a href="#">Waste</a></div>
+    <div><h4>Support</h4><a href="faq.html">FAQ</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+  </div>
+  <p>© 2026 UtilityComplaint. All rights reserved.</p>
+</footer>
+<script>
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+</script>
+</body>
+</html>

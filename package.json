@@ -1,0 +1,14 @@
+{
+  "name": "utility-complaint-tests",
+  "version": "1.0.0",
+  "description": "Unit and E2E tests for UtilityComplaint website",
+  "scripts": {
+    "test:unit": "jest test/unit.test.js --verbose",
+    "test:e2e": "playwright test test/e2e.test.js",
+    "test:all": "npm run test:unit && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "jest": "^29.7.0"
+  }
+}

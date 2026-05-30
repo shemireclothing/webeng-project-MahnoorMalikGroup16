@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Map Overview - UtilityComplaint</title>
+
+<link rel="stylesheet" href="style.css"/>
+
+<style>
+
+/* ===== PAGE WRAPPER (same as homepage) ===== */
+
+.page-content{
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* ===== HEADER TITLE ===== */
+
+.page-title{
+  text-align:center;
+  font-size:1.8rem;
+  font-weight:800;
+  color:var(--text-dark);
+  margin-bottom:6px;
+}
+
+.page-sub{
+  text-align:center;
+  color:var(--text-medium);
+  margin-bottom:30px;
+}
+
+/* ===== CITY GRID ===== */
+
+.city-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
+
+.city-card{
+  background:var(--card-bg);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px;
+  transition:0.2s;
+}
+
+.city-card:hover{
+  transform:translateY(-3px);
+}
+
+.city-name{
+  font-size:1.1rem;
+  font-weight:700;
+  color:var(--text-dark);
+}
+
+.city-count{
+  margin-top:8px;
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:20px;
+  background:var(--primary-dark);
+  color:#fff;
+  font-size:0.85rem;
+}
+
+.small-note{
+  margin-top:30px;
+  text-align:center;
+  font-size:0.85rem;
+  color:var(--text-light);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR (same as homepage) -->
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-icon">!</span>UtilityComplaint</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="how-it-works.html">How It Works</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="map.html" class="active">Map</a></li>
+    <li><a href="track.html">Track Complaint</a></li>
+    <li><a href="faq.html" >FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-theme" id="themeToggle"></button>
+    <a href="login.html" class="btn-login">Login</a>
+    <a href="signup.html" class="btn-signup">Sign Up</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+
+<div class="page-content">
+
+  <h2 class="page-title">Complaint Overview Map</h2>
+
+  <p class="page-sub">
+    City-wise breakdown of reported complaints
+  </p>
+
+  <div class="city-grid" id="cityContainer">
+    Loading...
+  </div>
+
+  <div class="small-note">
+    Data updates every 30 seconds
+  </div>
+
+</div>
+
+<!-- FOOTER (same style idea as homepage) -->
+
+<footer>
+  <div class="footer-grid">
+    <div><h4>UtilityComplaint</h4><p style="font-size:0.85rem;color:#c8b0e0;line-height:1.6">Report and track utility issues efficiently.</p></div>
+    <div><h4>Quick Links</h4><a href="index.html">Home</a><a href="dashboard.html">Dashboard</a><a href="map.html">Map</a><a href="track.html">Track</a></div>
+    <div><h4>Services</h4><a href="#">Electricity</a><a href="#">Water Supply</a><a href="#">Roads</a><a href="#">Waste</a></div>
+    <div><h4>Support</h4><a href="faq.html">FAQ</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+  </div>
+  <p>© 2026 UtilityComplaint. All rights reserved.</p>
+</footer>
+
+<script>
+
+// hamburger
+document.getElementById('hamburger')
+.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// load data
+let complaints = [];
+
+async function loadComplaints(){
+
+  try{
+
+    const res = await fetch('map_data.php');
+    const json = await res.json();
+
+    complaints = json.data || [];
+
+    render();
+
+  } catch(e){
+    console.log(e);
+  }
+
+}
+
+// render city cards
+function render(){
+
+  const cityCount = {};
+
+  complaints.forEach(c => {
+
+    const city = c.location || "Unknown";
+
+    cityCount[city] = (cityCount[city] || 0) + 1;
+
+  });
+
+  const container = document.getElementById('cityContainer');
+
+  container.innerHTML = "";
+
+  Object.keys(cityCount).forEach(city => {
+
+    container.innerHTML += `
+      <div class="city-card">
+        <div class="city-name">${city}</div>
+        <div class="city-count">${cityCount[city]} complaints</div>
+      </div>
+    `;
+
+  });
+
+}
+
+loadComplaints();
+setInterval(loadComplaints, 30000);
+
+</script>
+
+</body>
+</html>

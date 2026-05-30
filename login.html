@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - UtilityComplaint</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .auth-wrapper {
+      min-height: calc(100vh - 58px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 20px;
+    }
+    .auth-card {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 40px 44px; width: 100%; max-width: 440px;
+    }
+    .auth-card .logo-row { text-align: center; margin-bottom: 26px; }
+    .auth-card .logo-row .logo-icon { margin: 0 auto 8px; width: 44px; height: 44px; font-size: 1.4rem; }
+    .auth-card h2 { text-align: center; font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+    .auth-card .sub { text-align: center; color: var(--text-light); font-size: 0.9rem; margin-bottom: 28px; }
+    .auth-card .btn-primary { width: 100%; justify-content: center; padding: 12px; font-size: 1rem; margin-top: 6px; }
+    .divider-line { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--text-light); font-size: 0.85rem; }
+    .divider-line::before, .divider-line::after { content: ''; flex: 1; height: 1px; background: #e8e0f0; }
+    .social-btn { width: 100%; padding: 11px; border: 1.5px solid #ddd; border-radius: var(--radius-sm); background: #fff; font-size: 0.93rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.18s; margin-bottom: 10px; font-weight: 500; }
+    .social-btn:hover { border-color: var(--primary); }
+    .switch-link { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-medium); }
+    .switch-link a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    .switch-link a:hover { text-decoration: underline; }
+    .forgot { display: block; text-align: right; font-size: 0.85rem; color: var(--primary); text-decoration: none; margin-top: -8px; margin-bottom: 16px; }
+    .forgot:hover { text-decoration: underline; }
+    @media (max-width: 500px) { .auth-card { padding: 28px 20px; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-icon">!</span>UtilityComplaint</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="how-it-works.html">How It Works</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="track.html">Track Complaint</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-login">Login</a>
+    <a href="signup.html" class="btn-signup">Sign Up</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="logo-row">
+      <div class="logo-icon" style="background:#fff;border:2px solid #e05a7a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#e05a7a;font-weight:900;font-size:1.3rem">!</div>
+    </div>
+    <h2>Welcome Back</h2>
+    <p class="sub">Login to your UtilityComplaint account</p>
+
+    <button class="social-btn">🌐 Continue with Google</button>
+
+    <div class="divider-line">or</div>
+
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@email.com" required/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Enter your password" required/>
+      </div>
+      <a href="#" class="forgot">Forgot password?</a>
+      <button type="submit" class="btn-primary">Login</button>
+    </form>
+    <div class="switch-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+  async function handleLogin(e) {
+  e.preventDefault();
+  const email    = e.target.querySelector('[type="email"]').value;
+  const password = e.target.querySelector('[type="password"]').value;
+
+  const res  = await fetch('login.php', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+
+  if (data.success) {
+    window.location.href = 'dashboard.html';
+  } else {
+    alert(data.message);
+  }
+}
+</script>
+</body>
+</html>

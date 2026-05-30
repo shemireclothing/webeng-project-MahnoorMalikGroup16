@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UtilityComplaint - Report & Track</title>
+
+  <link rel="stylesheet" href="style.css"/>
+
+  <style>
+
+    /* ===== HERO ===== */
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 48px;
+      padding: 60px 64px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-text h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+    }
+
+    .hero-text p {
+      font-size: 1rem;
+      color: var(--text-medium);
+      line-height: 1.7;
+      margin-bottom: 28px;
+      max-width: 420px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-img {
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      aspect-ratio: 16/10;
+      background: #ccc;
+    }
+
+    .hero-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ===== STATS ===== */
+
+    .stats-bar {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 28px 48px;
+      max-width: 860px;
+      margin: 0 auto 60px;
+      text-align: center;
+    }
+
+    .stat-item + .stat-item {
+      border-left: 1.5px solid #e8e0f0;
+    }
+
+    .stat-item h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .stat-item p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    /* ===== REGISTER SECTION ===== */
+
+    .register-section {
+      max-width: 860px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+    }
+
+    .register-section .section-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .register-section .section-sub {
+      text-align: center;
+      color: var(--text-medium);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    .complaint-form-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 40px;
+    }
+
+    .complaint-form-card .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .upload-box {
+      border: 2px dashed #ccc;
+      border-radius: var(--radius-sm);
+      padding: 22px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.18s;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .upload-box:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .upload-box .upload-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .submit-row .btn-primary {
+      padding: 12px 36px;
+      font-size: 1rem;
+    }
+
+    /* ===== PRIORITY ===== */
+
+    .priority-options {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .priority-btn {
+      padding: 6px 18px;
+      border-radius: 20px;
+      border: 2px solid #ddd;
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .priority-btn.low.active,
+    .priority-btn.low:hover {
+      background: #d4edda;
+      border-color: #27ae60;
+      color: #1a7a3a;
+    }
+
+    .priority-btn.medium.active,
+    .priority-btn.medium:hover {
+      background: #fff3cd;
+      border-color: #f5a623;
+      color: #b7800a;
+    }
+
+    .priority-btn.high.active,
+    .priority-btn.high:hover {
+      background: #fde8ed;
+      border-color: #e05a7a;
+      color: #c0365a;
+    }
+
+    .priority-btn.urgent.active,
+    .priority-btn.urgent:hover {
+      background: #fde8e8;
+      border-color: #e74c3c;
+      color: #c0363a;
+    }
+
+    /* ===== SUCCESS TOAST ===== */
+
+    .success-toast {
+      display: none;
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #27ae60;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 9999;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    @keyframes fadeInUp {
+
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+
+    }
+
+    @media (max-width: 900px) {
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 36px 20px 24px;
+        gap: 28px;
+      }
+
+      .hero-text h1 {
+        font-size: 1.7rem;
+      }
+
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 20px;
+        gap: 16px;
+      }
+
+      .stat-item + .stat-item {
+        border-left: none;
+        border-top: 1.5px solid #e8e0f0;
+        padding-top: 16px;
+      }
+
+      .complaint-form-card {
+        padding: 22px 16px;
+      }
+
+      .complaint-form-card .form-row-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .register-section {
+        padding: 0 12px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav id="navbar">
+
+  <a href="index.html" class="nav-logo">
+
+    <span class="logo-icon">!</span>
+
+    UtilityComplaint
+
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+
+    <li><a href="index.html" class="active">Home</a></li>
+
+    <li><a href="how-it-works.html">How It Works</a></li>
+
+    <li><a href="dashboard.html">Dashboard</a></li>
+
+    <li><a href="map.html">Map</a></li>
+
+    <li><a href="track.html">Track Complaint</a></li>
+
+    <li><a href="faq.html">FAQ</a></li>
+
+  </ul>
+
+  <div class="nav-actions">
+
+    <button class="btn-theme"
+    id="themeToggle">
+
+    
+
+    </button>
+
+    <a href="login.html"
+    class="btn-login">
+
+    Login
+
+    </a>
+
+    <a href="signup.html"
+    class="btn-signup">
+
+    Sign Up
+
+    </a>
+
+    <button class="hamburger"
+    id="hamburger">
+
+      <span></span>
+      <span></span>
+      <span></span>
+
+    </button>
+
+  </div>
+
+</nav>
+
+<div class="page-content">
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="hero-text">
+
+      <h1>
+        Report & Track Your Utility Complaints Easily
+      </h1>
+
+      <p>
+        A simple and efficient platform to file complaints about electricity,
+        water, roads, and other utility services.
+      </p>
+
+      <div class="hero-actions">
+
+        <a href="#register-complaint"
+        class="btn-primary">
+
+        📋 File a Complaint
+
+        </a>
+
+        <a href="track.html"
+        class="btn-outline">
+
+        🔍 Track Status
+
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="hero-img">
+
+      <img
+      src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=700&q=80"
+      alt="Utility workers"/>
+
+    </div>
+
+  </section>
+
+  <!-- STATS -->
+
+  <div class="stats-bar">
+
+    <div class="stat-item">
+      <h2>10,000+</h2>
+      <p>Complaints Resolved</p>
+    </div>
+
+    <div class="stat-item">
+      <h2>5,000+</h2>
+      <p>Active Users</p>
+    </div>
+
+    <div class="stat-item">
+      <h2>95%</h2>
+      <p>Resolution Rate</p>
+    </div>
+
+    <div class="stat-item">
+      <h2>24hrs</h2>
+      <p>Avg Response Time</p>
+    </div>
+
+  </div>
+
+  <!-- REGISTER COMPLAINT -->
+
+  <section class="register-section"
+  id="register-complaint">
+
+    <h2 class="section-title">
+      Register a Complaint
+    </h2>
+
+    <p class="section-sub">
+      Fill in details below to file your complaint.
+    </p>
+
+    <div class="complaint-form-card card">
+
+      <form id="complaintForm"
+      onsubmit="submitComplaint(event)">
+
+        <div class="form-row-3">
+
+          <div class="form-group">
+
+            <label>Full Name *</label>
+
+            <input type="text"
+            id="full_name"
+            placeholder="Enter your name"
+            required />
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Email Address *</label>
+
+            <input type="email"
+            id="email"
+            placeholder="you@email.com"
+            required />
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Phone Number</label>
+
+            <input type="tel"
+            id="phone"
+            placeholder="+92 300 0000000" />
+
+          </div>
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label>Complaint Type *</label>
+
+            <select id="complaint_type"
+            required>
+
+              <option value="">
+                Select service type
+              </option>
+
+              <option>Electricity</option>
+
+              <option>Water Supply</option>
+
+              <option>Roads</option>
+
+              <option>Sewage</option>
+
+              <option>Waste</option>
+
+              <option>Telecom</option>
+
+            </select>
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Location / Area *</label>
+
+            <input type="text"
+            id="location"
+            placeholder="Enter your area"
+            required />
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Complaint Title *</label>
+
+          <input type="text"
+          id="title"
+          placeholder="Complaint title"
+          required />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Description *</label>
+
+          <textarea
+          rows="4"
+          id="description"
+          placeholder="Describe the issue"
+          required></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Priority Level</label>
+
+          <div class="priority-options">
+
+            <button type="button"
+            class="priority-btn low active"
+            onclick="setPriority(this)">
+
+            Low
+
+            </button>
+
+            <button type="button"
+            class="priority-btn medium"
+            onclick="setPriority(this)">
+
+            Medium
+
+            </button>
+
+            <button type="button"
+            class="priority-btn high"
+            onclick="setPriority(this)">
+
+            High
+
+            </button>
+
+            <button type="button"
+            class="priority-btn urgent"
+            onclick="setPriority(this)">
+
+            Urgent
+
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Attach Photos (optional)</label>
+
+          <div class="upload-box"
+          onclick="document.getElementById('photoUpload').click()">
+
+            <span class="upload-icon">📷</span>
+
+            Click to upload photos
+
+            <br>
+
+            <small>
+              PNG, JPG up to 10MB each
+            </small>
+
+            <input
+            type="file"
+            id="photoUpload"
+            multiple
+            accept="image/*"
+            style="display:none"
+            onchange="handleFiles(this)"/>
+
+          </div>
+
+          <div id="fileList"
+          style="margin-top:8px;
+          font-size:0.85rem;
+          color:var(--primary)">
+          </div>
+
+        </div>
+
+        <!-- GPS -->
+
+        <input type="hidden"
+        id="latitude">
+
+        <input type="hidden"
+        id="longitude">
+
+        <div class="submit-row">
+
+          <button type="reset"
+          class="btn-outline">
+
+          Clear Form
+
+          </button>
+
+          <button type="submit"
+          class="btn-primary">
+
+          📤 Submit Complaint
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+</div>
+
+<!-- SUCCESS -->
+
+<div class="success-toast"
+id="successToast">
+
+✅ Complaint submitted successfully!
+
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+
+  <div class="footer-grid">
+
+    <div>
+
+      <h4>UtilityComplaint</h4>
+
+      <p style="font-size:0.85rem;
+      color:#c8b0e0;
+      line-height:1.6">
+
+      A platform for citizens to report utility issues.
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <p>
+    © 2026 UtilityComplaint.
+    All rights reserved.
+  </p>
+
+</footer>
+
+<script>
+
+// ================= HAMBURGER =================
+
+document.getElementById('hamburger')
+.addEventListener('click', () => {
+
+  document.getElementById('navLinks')
+  .classList.toggle('open');
+
+});
+
+// ================= PRIORITY =================
+
+function setPriority(btn) {
+
+  document.querySelectorAll('.priority-btn')
+
+  .forEach(b => b.classList.remove('active'));
+
+  btn.classList.add('active');
+
+}
+
+// ================= FILE DISPLAY =================
+
+function handleFiles(input) {
+
+  const list =
+  document.getElementById('fileList');
+
+  list.innerHTML = Array.from(input.files)
+
+  .map(f => `📎 ${f.name}`)
+
+  .join('<br>');
+
+}
+
+// ================= GPS =================
+
+navigator.geolocation.getCurrentPosition(
+
+  position => {
+
+    document.getElementById('latitude').value =
+    position.coords.latitude;
+
+    document.getElementById('longitude').value =
+    position.coords.longitude;
+
+  },
+
+  error => {
+
+    console.log('Location denied');
+
+  }
+
+);
+
+// ================= SUBMIT =================
+
+async function submitComplaint(e) {
+
+  e.preventDefault();
+
+  const form = e.target;
+
+  const submitBtn =
+  form.querySelector('[type="submit"]');
+
+  submitBtn.textContent =
+  'Submitting...';
+
+  submitBtn.disabled = true;
+
+  const payload = {
+
+    full_name:
+    document.getElementById('full_name').value,
+
+    email:
+    document.getElementById('email').value,
+
+    phone:
+    document.getElementById('phone').value,
+
+    complaint_type:
+    document.getElementById('complaint_type').value,
+
+    location:
+    document.getElementById('location').value,
+
+    title:
+    document.getElementById('title').value,
+
+    description:
+    document.getElementById('description').value,
+
+    priority:
+    document.querySelector('.priority-btn.active')
+    ?.textContent || 'Medium',
+
+    latitude:
+    document.getElementById('latitude').value,
+
+    longitude:
+    document.getElementById('longitude').value
+
+  };
+
+  try {
+
+    const res = await fetch(
+
+      'register_complaint.php',
+
+      {
+
+        method: 'POST',
+
+        headers: {
+
+          'Content-Type': 'application/json'
+
+        },
+
+        body: JSON.stringify(payload)
+
+      }
+
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+
+      document.getElementById('successToast')
+      .textContent =
+
+      `✅ Submitted! Tracking ID: ${data.complaint_id}`;
+
+      document.getElementById('successToast')
+      .style.display = 'block';
+
+      form.reset();
+
+      setTimeout(() => {
+
+        document.getElementById('successToast')
+        .style.display = 'none';
+
+      }, 5000);
+
+    }
+
+    else {
+
+      alert(
+        'Error: ' + data.message
+      );
+
+    }
+
+  }
+
+  catch(err) {
+
+    alert(
+      'Connection error. Make sure XAMPP is running.'
+    );
+
+    console.error(err);
+
+  }
+
+  submitBtn.textContent =
+  '📤 Submit Complaint';
+
+  submitBtn.disabled = false;
+
+}
+
+// ================= DARK MODE =================
+
+document.getElementById('themeToggle')
+
+.addEventListener('click', function() {
+
+  document.body.classList
+  .toggle('dark-mode');
+
+  this.textContent =
+
+  document.body.classList.contains('dark-mode')
+
+  ? ''
+
+  : '';
+
+});
+
+</script>
+
+</body>
+</html>

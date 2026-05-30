@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Track Complaint - UtilityComplaint</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .track-wrapper { max-width: 760px; margin: 0 auto; padding: 52px 28px 60px; }
+    .track-header { text-align: center; margin-bottom: 36px; }
+    .track-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+    .track-header p { color: var(--text-medium); }
+    .search-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 32px; margin-bottom: 28px; }
+    .search-row { display: flex; gap: 12px; }
+    .search-row input { flex: 1; padding: 12px 16px; border: 1.5px solid #ddd; border-radius: var(--radius-sm); font-size: 0.95rem; }
+    .search-row input:focus { outline: none; border-color: var(--primary); }
+    .search-row button { padding: 12px 28px; }
+    .samples-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 32px; }
+    .samples-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .samples-card p { font-size: 0.88rem; color: var(--text-light); margin-bottom: 16px; }
+    .samples-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .sample-item { border: 1.5px solid #f0eaf8; border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: border-color 0.18s, box-shadow 0.18s; }
+    .sample-item:hover { border-color: var(--primary); box-shadow: 0 2px 12px rgba(100,50,130,0.10); }
+    .sample-item strong { display: block; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 3px; }
+    .sample-item span { font-size: 0.85rem; color: var(--text-light); display: block; margin-bottom: 8px; }
+    /* Result */
+    .result-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 32px; margin-top: 24px; display: none; }
+    .result-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .result-id { font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); }
+    .result-title { font-size: 1rem; color: var(--text-medium); margin-top: 3px; }
+    .result-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    .meta-item label { font-size: 0.8rem; color: var(--text-light); font-weight: 600; display: block; margin-bottom: 3px; }
+    .meta-item span { font-size: 0.92rem; font-weight: 600; }
+    /* Timeline */
+    .timeline { margin-top: 8px; }
+    .timeline h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; }
+    .tl-item { display: flex; gap: 14px; margin-bottom: 14px; }
+    .tl-dot-col { display: flex; flex-direction: column; align-items: center; }
+    .tl-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+    .tl-line { width: 2px; flex: 1; background: #e0d8f0; margin-top: 3px; }
+    .tl-content strong { font-size: 0.9rem; }
+    .tl-content span { font-size: 0.82rem; color: var(--text-light); display: block; }
+    .not-found-msg { text-align: center; padding: 28px; color: #c0363a; background: #fde8e8; border-radius: var(--radius); margin-top: 20px; display: none; }
+    .loading-spinner { text-align: center; padding: 28px; color: var(--text-light); display: none; }
+    @media (max-width: 600px) { .samples-grid { grid-template-columns: 1fr; } .search-row { flex-direction: column; } .result-meta { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-icon">!</span>UtilityComplaint</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="how-it-works.html">How It Works</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="track.html" class="active">Track Complaint</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-theme" id="themeToggle"></button>
+    <a href="login.html" class="btn-login">Login</a>
+    <a href="signup.html" class="btn-signup">Sign Up</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-content">
+<div class="track-wrapper">
+  <div class="track-header">
+    <h1>Track Your Complaint</h1>
+    <p>Enter your complaint ID to see the current status</p>
+  </div>
+
+  <div class="search-card">
+    <label style="font-size:0.88rem;font-weight:600;display:block;margin-bottom:8px;">Complaint ID</label>
+    <div class="search-row">
+      <input type="text" id="trackInput" placeholder="Enter complaint ID (e.g., CMP-001)"
+             onkeydown="if(event.key==='Enter') trackComplaint()"/>
+      <button class="btn-primary" onclick="trackComplaint()">🔍 Track</button>
+    </div>
+  </div>
+
+  <!-- Loading spinner -->
+  <div class="loading-spinner" id="loadingSpinner">⏳ Looking up complaint...</div>
+
+  <!-- Not found message -->
+  <div class="not-found-msg" id="notFoundMsg">
+    ❌ Complaint not found. Please check the ID and try again.
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div>
+        <div class="result-id" id="res-id"></div>
+        <div class="result-title" id="res-title"></div>
+      </div>
+      <div id="res-badge"></div>
+    </div>
+    <div class="result-meta">
+      <div class="meta-item"><label>Type</label><span id="res-type"></span></div>
+      <div class="meta-item"><label>Location</label><span id="res-location"></span></div>
+      <div class="meta-item"><label>Filed On</label><span id="res-date"></span></div>
+      <div class="meta-item"><label>Priority</label><span id="res-priority"></span></div>
+      <div class="meta-item"><label>Submitted By</label><span id="res-name"></span></div>
+      <div class="meta-item"><label>Last Update</label><span id="res-update"></span></div>
+    </div>
+    <div class="timeline">
+      <h4>Activity Timeline</h4>
+      <div id="res-timeline"></div>
+    </div>
+  </div>
+
+  <!-- SAMPLE IDs (loads dynamically from DB, shows most recent 6) -->
+  <div class="samples-card" id="samplesCard" style="margin-top:28px;">
+    <h3>Recent Complaints</h3>
+    <p>Click any entry below to track it</p>
+    <div class="samples-grid" id="samplesGrid">
+      <div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:20px;">⏳ Loading recent complaints...</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><h4>UtilityComplaint</h4><p style="font-size:0.85rem;color:#c8b0e0;line-height:1.6">Report and track utility issues efficiently.</p></div>
+    <div><h4>Quick Links</h4><a href="index.html">Home</a><a href="dashboard.html">Dashboard</a><a href="map.html">Map</a><a href="track.html">Track</a></div>
+    <div><h4>Services</h4><a href="#">Electricity</a><a href="#">Water Supply</a><a href="#">Roads</a><a href="#">Waste</a></div>
+    <div><h4>Support</h4><a href="faq.html">FAQ</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+  </div>
+  <p>© 2026 UtilityComplaint. All rights reserved.</p>
+</footer>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open'));
+
+  const badgeMap = {
+    'In Progress':'badge-progress', 'Under Review':'badge-review',
+    'Resolved':'badge-resolved',    'Submitted':'badge-submitted',
+    'Pending':'badge-pending',      'Rejected':'badge-rejected'
+  };
+
+  const priorityMap = {
+    'High':   '🔴 High',
+    'Medium': '🟡 Medium',
+    'Low':    '🟢 Low'
+  };
+
+  // ── Build timeline from status ────────────────────────────────
+  function buildTimeline(complaint) {
+    const steps = [];
+    const filed = formatDate(complaint.created_at);
+    const updated = formatDate(complaint.updated_at);
+
+    steps.push({ dot: '#27ae60', text: 'Complaint Submitted',        date: filed });
+
+    if (['Under Review','In Progress','Resolved','Rejected'].includes(complaint.status))
+      steps.push({ dot: '#9b59b6', text: 'Received & Under Review', date: filed });
+
+    if (['In Progress','Resolved'].includes(complaint.status))
+      steps.push({ dot: '#e05a7a', text: 'Work In Progress',         date: updated });
+
+    if (complaint.status === 'Resolved')
+      steps.push({ dot: '#27ae60', text: 'Issue Resolved ✅',        date: updated });
+
+    if (complaint.status === 'Rejected')
+      steps.push({ dot: '#e74c3c', text: 'Complaint Rejected',       date: updated });
+
+    return steps;
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+  }
+
+  // ── Show result card ─────────────────────────────────────────
+  function displayResult(id, c) {
+    document.getElementById('res-id').textContent      = id;
+    document.getElementById('res-title').textContent   = c.title;
+    document.getElementById('res-badge').innerHTML     = `<span class="badge ${badgeMap[c.status]||''}">${c.status.toUpperCase()}</span>`;
+    document.getElementById('res-type').textContent    = c.complaint_type;
+    document.getElementById('res-location').textContent= c.location;
+    document.getElementById('res-date').textContent    = formatDate(c.created_at);
+    document.getElementById('res-priority').textContent= priorityMap[c.priority] || c.priority || '🟡 Medium';
+    document.getElementById('res-name').textContent    = c.full_name || '—';
+    document.getElementById('res-update').textContent  = formatDate(c.updated_at);
+
+    const timeline = buildTimeline(c);
+    document.getElementById('res-timeline').innerHTML  = timeline.map((t, i) => `
+      <div class="tl-item">
+        <div class="tl-dot-col">
+          <div class="tl-dot" style="background:${t.dot}"></div>
+          ${i < timeline.length - 1 ? '<div class="tl-line"></div>' : ''}
+        </div>
+        <div class="tl-content">
+          <strong>${t.text}</strong>
+          <span>${t.date}</span>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('resultCard').style.display = 'block';
+    document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Main track function (calls PHP) ──────────────────────────
+  async function trackComplaint() {
+    const id = document.getElementById('trackInput').value.trim().toUpperCase();
+    if (!id) { alert('Please enter a Complaint ID'); return; }
+
+    // Reset UI
+    document.getElementById('resultCard').style.display  = 'none';
+    document.getElementById('notFoundMsg').style.display = 'none';
+    document.getElementById('loadingSpinner').style.display = 'block';
+
+    try {
+      const res  = await fetch(`track_complaint.php?id=${encodeURIComponent(id)}`);
+      const data = await res.json();
+
+      document.getElementById('loadingSpinner').style.display = 'none';
+
+      if (!data.success) {
+        document.getElementById('notFoundMsg').textContent =
+          `❌ ${data.message || 'Complaint not found. Please check the ID and try again.'}`;
+        document.getElementById('notFoundMsg').style.display = 'block';
+        return;
+      }
+
+      displayResult(id, data.data);
+
+    } catch (err) {
+      document.getElementById('loadingSpinner').style.display = 'none';
+      document.getElementById('notFoundMsg').textContent =
+        '❌ Connection error. Make sure XAMPP is running.';
+      document.getElementById('notFoundMsg').style.display = 'block';
+    }
+  }
+
+  // ── Quick track from sample cards ────────────────────────────
+  function quickTrack(id) {
+    document.getElementById('trackInput').value = id;
+    trackComplaint();
+  }
+
+  // ── Load recent complaints for sample cards ───────────────────
+  async function loadRecentComplaints() {
+    try {
+      const res  = await fetch('get_complaints.php');
+      const data = await res.json();
+
+      if (!data.success || !data.data.length) {
+        document.getElementById('samplesGrid').innerHTML =
+          '<div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:20px;">No complaints yet. Be the first to submit one!</div>';
+        return;
+      }
+
+      // Show latest 6
+      const recent = data.data.slice(0, 6);
+      document.getElementById('samplesGrid').innerHTML = recent.map(c => `
+        <div class="sample-item" onclick="quickTrack('${c.complaint_id}')">
+          <strong>${c.complaint_id}</strong>
+          <span>${c.title}</span>
+          <span class="badge ${badgeMap[c.status]||''}">${c.status.toUpperCase()}</span>
+        </div>`).join('');
+
+    } catch (err) {
+      document.getElementById('samplesGrid').innerHTML =
+        '<div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:20px;">Could not load recent complaints. Make sure XAMPP is running.</div>';
+    }
+  }
+
+  // ── Auto-track if ?id= in URL (from dashboard View button) ───
+  function checkURLParam() {
+    const params = new URLSearchParams(window.location.search);
+    const id     = params.get('id');
+    if (id) {
+      document.getElementById('trackInput').value = id.toUpperCase();
+      trackComplaint();
+    }
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  loadRecentComplaints();
+  checkURLParam();
+</script>
+</body>
+</html>

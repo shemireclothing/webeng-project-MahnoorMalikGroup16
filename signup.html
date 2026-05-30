@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - UtilityComplaint</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .auth-wrapper { min-height: calc(100vh - 58px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .auth-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 40px 44px; width: 100%; max-width: 480px; }
+    .auth-card h2 { text-align: center; font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+    .auth-card .sub { text-align: center; color: var(--text-light); font-size: 0.9rem; margin-bottom: 28px; }
+    .auth-card .btn-primary { width: 100%; justify-content: center; padding: 12px; font-size: 1rem; margin-top: 6px; }
+    .social-btn { width: 100%; padding: 11px; border: 1.5px solid #ddd; border-radius: var(--radius-sm); background: #fff; font-size: 0.93rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.18s; margin-bottom: 10px; font-weight: 500; }
+    .social-btn:hover { border-color: var(--primary); }
+    .divider-line { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--text-light); font-size: 0.85rem; }
+    .divider-line::before, .divider-line::after { content: ''; flex: 1; height: 1px; background: #e8e0f0; }
+    .switch-link { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-medium); }
+    .switch-link a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    .switch-link a:hover { text-decoration: underline; }
+    .terms { font-size: 0.83rem; color: var(--text-light); text-align: center; margin-top: 12px; }
+    .terms a { color: var(--primary); }
+    @media (max-width: 500px) { .auth-card { padding: 28px 20px; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-icon">!</span>UtilityComplaint</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="how-it-works.html">How It Works</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="track.html">Track Complaint</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-login">Login</a>
+    <a href="signup.html" class="btn-signup">Sign Up</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <h2>Create an Account</h2>
+    <p class="sub">Join UtilityComplaint — report issues, get them resolved</p>
+
+    <button class="social-btn">🌐 Sign up with Google</button>
+    <div class="divider-line">or</div>
+
+    <form onsubmit="handleSignup(event)">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="First name" required/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name" required/></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@email.com" required/></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+92 300 0000000"/></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="Create a strong password" required/></div>
+      <div class="form-group"><label>Confirm Password</label><input type="password" placeholder="Repeat password" required/></div>
+      <button type="submit" class="btn-primary">Create Account</button>
+    </form>
+    <p class="terms">By signing up you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+    <div class="switch-link">Already have an account? <a href="login.html">Login</a></div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+  async function handleSignup(e) {
+  e.preventDefault();
+  const inputs = e.target.querySelectorAll('input');
+  const payload = {
+    first_name: inputs[0].value,
+    last_name:  inputs[1].value,
+    email:      inputs[2].value,
+    phone:      inputs[3].value,
+    password:   inputs[4].value
+  };
+
+  const res  = await fetch('signup.php', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(payload)
+  });
+  const data = await res.json();
+
+  if (data.success) {
+    alert('Account created! Please login.');
+    window.location.href = 'login.html';
+  } else {
+    alert(data.message);
+  }
+}
+</script>
+</body>
+</html>

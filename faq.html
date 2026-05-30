@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ - UtilityComplaint</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .faq-wrapper { max-width: 760px; margin: 0 auto; padding: 52px 28px 60px; }
+    .faq-header { text-align: center; margin-bottom: 32px; }
+    .faq-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+    .faq-header p { color: var(--text-medium); margin-bottom: 20px; }
+    .export-btn { background: var(--primary-light); color: #fff; border: none; padding: 10px 24px; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    .search-box { margin-bottom: 22px; }
+    .search-box input {
+      width: 100%; padding: 12px 18px; border: 1.5px solid #ddd;
+      border-radius: var(--radius-sm); font-size: 0.95rem;
+    }
+    .search-box input:focus { outline: none; border-color: var(--primary); }
+    .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+    .cat-btn {
+      padding: 7px 18px; border-radius: 20px; border: 1.5px solid #ddd;
+      background: #fff; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+      transition: 0.18s;
+    }
+    .cat-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .cat-btn:hover:not(.active) { background: #f0e8f8; border-color: var(--primary); color: var(--primary); }
+    .faq-item {
+      background: #fff; border-radius: 10px; margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(100,50,130,0.07); overflow: hidden;
+    }
+    .faq-question {
+      padding: 18px 22px; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.15s;
+    }
+    .faq-question:hover { background: #faf8ff; }
+    .faq-question.open { color: var(--primary-dark); }
+    .faq-chevron { font-size: 1rem; transition: transform 0.25s; }
+    .faq-question.open .faq-chevron { transform: rotate(180deg); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.2s;
+      padding: 0 22px; color: var(--text-medium); font-size: 0.93rem; line-height: 1.7;
+    }
+    .faq-answer.open { max-height: 400px; padding: 0 22px 18px; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-icon">!</span>UtilityComplaint</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="how-it-works.html">How It Works</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="track.html">Track Complaint</a></li>
+    <li><a href="faq.html" class="active">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-theme" id="themeToggle"></button>
+    <a href="login.html" class="btn-login">Login</a>
+    <a href="signup.html" class="btn-signup">Sign Up</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-content">
+<div class="faq-wrapper">
+  <div class="faq-header">
+    <h1>Frequently Asked Questions</h1>
+    <p>Find answers to common questions about our complaint system</p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="faqSearch" placeholder="🔍  Search for answers..." oninput="filterFAQ()"/>
+  </div>
+
+  <div class="cat-filters">
+    <button class="cat-btn active" onclick="setCat('all', this)">All</button>
+    <button class="cat-btn" onclick="setCat('General', this)">General</button>
+    <button class="cat-btn" onclick="setCat('Filing Complaints', this)">Filing Complaints</button>
+    <button class="cat-btn" onclick="setCat('Tracking', this)">Tracking</button>
+    <button class="cat-btn" onclick="setCat('Technical', this)">Technical</button>
+    <button class="cat-btn" onclick="setCat('Priority & Response', this)">Priority &amp; Response</button>
+    <button class="cat-btn" onclick="setCat('Contact', this)">Contact</button>
+  </div>
+
+  <div id="faqList"></div>
+</div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><h4>UtilityComplaint</h4><p style="font-size:0.85rem;color:#c8b0e0;line-height:1.6">Report and track utility issues efficiently.</p></div>
+    <div><h4>Quick Links</h4><a href="index.html">Home</a><a href="dashboard.html">Dashboard</a><a href="map.html">Map</a><a href="track.html">Track</a></div>
+    <div><h4>Services</h4><a href="#">Electricity</a><a href="#">Water Supply</a><a href="#">Roads</a><a href="#">Waste</a></div>
+    <div><h4>Support</h4><a href="faq.html">FAQ</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+  </div>
+  <p>© 2026 UtilityComplaint. All rights reserved.</p>
+</footer>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+
+  const faqs = [
+    { cat: 'General', q: 'What is the Utility Complaint System?', a: 'The Utility Complaint System is an online platform that allows citizens to report, track, and manage utility-related complaints such as electricity outages, water supply issues, road problems, and more. It connects users with the relevant government departments for faster resolution.' },
+    { cat: 'General', q: 'How do I create an account?', a: 'Click the "Sign Up" button on the top right of the page. Fill in your name, email address, and create a password. You\'ll receive a verification email to confirm your account.' },
+    { cat: 'Filing Complaints', q: 'How do I file a complaint?', a: 'Navigate to the Home page and scroll down to the "Register a Complaint" section, or click "File a Complaint" in the hero section. Fill in your details, select the complaint type, describe the issue, optionally attach photos, and submit.' },
+    { cat: 'Filing Complaints', q: 'What information do I need to provide?', a: 'You need to provide your full name, contact information, the type of utility issue, your location or address, a title and description of the problem. Photos are optional but help speed up resolution.' },
+    { cat: 'Filing Complaints', q: 'Can I attach photos to my complaint?', a: 'Yes! You can attach up to 5 photos in PNG or JPG format, each up to 10MB. Photos of the issue help the field teams understand the problem better and resolve it faster.' },
+    { cat: 'Tracking', q: 'How do I track my complaint?', a: 'Go to the "Track Complaint" page and enter your complaint ID (e.g., CMP-001). You\'ll see the full status, timeline, and department handling your complaint. You can also view it on the Dashboard.' },
+    { cat: 'Tracking', q: 'What do the different statuses mean?', a: 'Submitted: Your complaint has been received. Under Review: Being assessed by the department. In Progress: A team is actively working on it. Resolved: The issue has been fixed. Rejected: The complaint could not be processed (reason provided).' },
+    { cat: 'Technical', q: 'Why can\'t I see the map?', a: 'The map requires an internet connection and may be blocked by some firewalls or ad blockers. Try refreshing the page or disabling browser extensions. The map uses OpenStreetMap which is free and open-source.' },
+    { cat: 'Technical', q: 'Is the website mobile-friendly?', a: 'Yes, the website is fully responsive and works on all devices — smartphones, tablets, and desktops.' },
+    { cat: 'Priority & Response', q: 'How is priority determined?', a: 'You can set priority when filing (Low, Medium, High, Urgent). Our system also auto-assesses based on the type and location. Urgent and high-priority complaints are escalated to relevant departments immediately.' },
+    { cat: 'Priority & Response', q: 'What is the average response time?', a: 'Our platform has an average response time of 24 hours for acknowledgment, and most complaints are resolved within 3–7 business days depending on severity and department availability.' },
+    { cat: 'Contact', q: 'How do I contact support?', a: 'You can reach us via email at support@utilitycomplaint.gov.pk or call our helpline at 0800-12345 (toll-free). Support is available Monday–Saturday, 9am–6pm.' },
+  ];
+
+  let activeCat = 'all';
+  let searchTerm = '';
+
+  function setCat(cat, btn) {
+    activeCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderFAQ();
+  }
+
+  function filterFAQ() {
+    searchTerm = document.getElementById('faqSearch').value.toLowerCase();
+    renderFAQ();
+  }
+
+  function renderFAQ() {
+    const filtered = faqs.filter(f => {
+      const matchCat = activeCat === 'all' || f.cat === activeCat;
+      const matchSearch = f.q.toLowerCase().includes(searchTerm) || f.a.toLowerCase().includes(searchTerm);
+      return matchCat && matchSearch;
+    });
+    document.getElementById('faqList').innerHTML = filtered.map((f, i) => `
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          ${f.q}
+          <span class="faq-chevron">⌄</span>
+        </div>
+        <div class="faq-answer">${f.a}</div>
+      </div>`).join('') || '<p style="color:var(--text-light);text-align:center;padding:20px">No results found.</p>';
+  }
+
+  function toggleFAQ(el) {
+    const answer = el.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-answer.open').forEach(a => { a.classList.remove('open'); a.previousElementSibling.classList.remove('open'); });
+    if (!isOpen) { answer.classList.add('open'); el.classList.add('open'); }
+  }
+
+  renderFAQ();
+</script>
+</body>
+</html>
